@@ -1,17 +1,19 @@
 ## vsomeip in 10 minutes
 
 #### Table of contents
-[SOME/IP Introduction](#SOME/IP Short Introduction)
-[SOME/IP On-Wire Format](#SOME/IP On-Wire Format)
-[SOME/IP Protocol](#SOME/IP Protocol)
-[SOME/IP Service discovery](#SOME/IP Service discovery)
-[vsomeip Short Overview](#vsomeip Short Overview)
-[Preparation / Prerequisites](#Preparation / Prerequisites)
-[First Application](#First Application)
-[Availability](#Availability)
-[Request / Response](#Request / Response)
-[Subscribe / Notify](#Subscribe / Notify)
-[Communication between two devices](#Communication between two devices)
+[SOME/IP Introduction](#intro)  
+[SOME/IP On-Wire Format](#onwire)  
+[SOME/IP Protocol](#protocol)  
+[SOME/IP Service discovery](#sd)  
+[vsomeip Short Overview](#vsomeip)  
+[Preparation / Prerequisites](#prep)  
+[First Application](#first)  
+[Availability](#availability)  
+[Request / Response](#request)  
+[Subscribe / Notify](#subscribe)  
+[Communication between two devices](#devices)  
+
+<a name="intro"/>
 
 #### SOME/IP Short Introduction
 
@@ -22,6 +24,8 @@ Let's start with the three main parts of the SOME/IP specification:
 - On-wire format
 - Protocol
 - Service Discovery
+
+<a name="onwire"/>
 
 ##### SOME/IP On-Wire Format
 
@@ -56,6 +60,8 @@ We see that there are "REQUESTs" and "RESPONSEs" for normal function calls and n
 
 The payload contains the serialized data. The picture shows the serialization in the simple case that the transmitted data structure is a nested structure with only base data types. In this case it is easy: the struct elements are just flattened, that means that they are simply written one after the other into the payload.
 
+<a name="protocol"/>
+
 ##### SOME/IP Protocol
 
 In this section mainly 2 points are important and shall be described now:
@@ -73,6 +79,8 @@ Please take now a look at the following picture which shows the basic SOME/IP co
 
 In addition to the standard REQUEST/RESPONSE mechanism for remote procedure calls there is also the PUBLISH/SUBSCRIBE pattern for events. Note that events in the SOME/IP protocol are always grouped in an event group; therefore it is only possible to subscribe to event groups and not to the event itself. The SOME/IP specification also knows "fields"; in this case the setter/getter methods are following the REQUEST/RESPONSE pattern and notfication messages of changes are events. The subscription itself is done via the SOME/IP service discovery.
 
+<a name="sd"/>
+
 ##### SOME/IP Service discovery
 
 The SOME/IP Service Discovery is used to locate service instances and to detect if service instances are running as well as implementing the Publish/Subscribe handling. This is mainly done via so-called offer messages; that means that each device broadcasts (multicasts) messages which contain all the services which are offered by this device. SOME/IP SD messages are sent via UDP. If services are required by client applications but at the moment not offered, then also "find messages" can be sent. Other SOME/IP SD messages can be used for publishing or subscribing an eventgroup.
@@ -82,6 +90,8 @@ The following picture shows the general structure of a SOME/IP SD message.
 ![SOMEIP Service Discovery](https://github.com/GENIVI/vsomeip/wiki/images/SOMEIPServiceDiscovery.jpg)
 
 This should be enough for the beginning. More details are discussed later in the examples or can be read in the specification.
+
+<a name="vsomeip"/>
 
 #### vsomeip Short Overview
 
@@ -96,6 +106,8 @@ The central vsomeip routing manager gets messages only if they have to be sent t
 :exclamation: vsomeip does not implement the serialization of data structures! This is covered by the SOME/IP binding of CommonAPI. vsomeip just covers the SOME/IP protocol and the Service Discovery.
 
 This was now a very, very short overview of SOME/IP and vsomeip. But for the first start it is enough; further details are explained directly in the examples.
+
+<a name="prep"/>
 
 #### Preparation / Prerequisites
 
@@ -116,6 +128,8 @@ This works, but in order to avoid some special problems afterwards I recommend t
 ```
 
 This parameter ensures that you can kill your vsomeip application without any problems (otherwise it might be that the shared memory segment /dev/shm/vsomeip is not be correctly removed when you stop the application with Ctrl-C).
+
+<a name="first"/>
 
 #### First Application
 
@@ -201,6 +215,8 @@ Let's discuss some points in detail.
 - By default two threads are created for receiving SOME/IP messages; this allows vsomeip to handle long messages in parallel. 
 - Then you see the current vsomeip version and the SOME/IP routing is ready. 
 
+<a name="availability"/>
+
 #### Availability
 
 So far the application does not do too much work :smiley: And there is no difference between client and service. Now let's assume that our `service-example` is the service and we want to write a client that wants to use the service. In a first step we have to trigger the application to offer an instance of a service. This can be done by adding an *offer_service* command to our first example:
@@ -266,6 +282,7 @@ On service side there should be the following additional line:
 ```bash
 2017-03-21 04:14:33.850964 [info] OFFER(0001): [1234.5678:0.0]
 ```
+<a name="request"/>
 
 #### Request / Response
 
@@ -419,6 +436,7 @@ CLIENT: Service [1234.5678] is available.
 SERVICE: Received message with Client/Session [1002/0001] 00 01 02 03 04 05 06 07 08 09 
 CLIENT: Received message with Client/Session [1002/0001] 09 08 07 06 05 04 03 02 01 00 
 ```
+<a name="subscribe"/>
 
 #### Subscribe / Notify
 
@@ -517,6 +535,8 @@ In the console you should now see the following lines:
 ```
 
 The numbers in the round brackets are again the client IDs; I started the service first, therfore the service has got from the autoconfiguration the number 1 and the client the number 2.
+
+<a name="devices"/>
 
 #### Communication between two devices
 
