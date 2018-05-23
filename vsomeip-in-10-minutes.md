@@ -143,7 +143,7 @@ std::shared_ptr< vsomeip::application > app;
 
 int main() {
 
-    app = vsomeip::runtime::get()->create_application("Hello");
+    app = vsomeip::runtime::get()->create_application("World");
     app->init();
     app->start();
 }
@@ -232,7 +232,7 @@ std::shared_ptr< vsomeip::application > app;
 
 int main() {
 
-    app = vsomeip::runtime::get()->create_application("Hello");
+    app = vsomeip::runtime::get()->create_application("World");
     app->init();
     app->offer_service(SAMPLE_SERVICE_ID, SAMPLE_INSTANCE_ID);
     app->start();
